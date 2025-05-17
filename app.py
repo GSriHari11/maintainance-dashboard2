@@ -1,45 +1,55 @@
 import streamlit as st
-from auth import init_user_data, save_user, check_login, get_password
-from email_utils import send_password_email
+from auth import signup_user, login_user, reset_password
+from email_utils import send_email
+import random
+import string
 
-st.set_page_config(page_title="Maintenance Dashboard", page_icon="🛠️", layout="centered")
-init_user_data()
+st.set_page_config(page_title="Maintenance Dashboard", layout="centered")
 
-st.title("🔐 HPCL Maintenance Dashboard Login")
+def generate_temp_password(length=8):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+st.title("Dashboard")
 
 menu = st.radio("Choose", ["Login", "Signup", "Forgot Password"])
 
-if menu == "Signup":
-    email = st.text_input("Email", placeholder="Only @hpcl.in allowed")
-    password = st.text_input("Password", type="password")
-    if st.button("Create Account"):
-        if not email.endswith("@hpcl.in"):
-            st.error("Only @hpcl.in email addresses are allowed.")
-        elif save_user(email, password):
-            st.success("User registered successfully.")
-        else:
-            st.warning("User already exists.")
+if menu == "Login":
+    email = st.text_input("Email", key="login_email")
+    password = st.text_input("Password", type="password", key="login_password")
 
-elif menu == "Login":
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
     if st.button("Login"):
-        if check_login(email, password):
-            st.success("Login successful!")
-            st.write(f"Welcome, {email}")
-            # Place dashboard logic here
+        if login_user(email, password):
+            st.success("Logged in successfully.")
         else:
             st.error("Invalid credentials.")
 
-elif menu == "Forgot Password":
-    email = st.text_input("Enter your HPCL Email")
-    if st.button("Send Password"):
-        if not email.endswith("@hpcl.in"):
-            st.error("Only @hpcl.in email addresses are allowed.")
-        else:
-            pwd = get_password(email)
-            if pwd:
-                send_password_email(email, pwd)
-                st.success("Password sent to your email.")
+elif menu == "Signup":
+    with st.form("signup_form"):
+        email = st.text_input("Email", key="signup_email")
+        password = st.text_input("Password", type="password", key="signup_password")
+        submit = st.form_submit_button("Create Account")
+
+        if submit:
+            if not email.endswith("@hpcl.in"):
+                st.error("Only @hpcl.in emails are allowed.")
             else:
-                st.warning("Email not registered.")
+                success, msg = signup_user(email, password)
+                if success:
+                    st.success(msg)
+                else:
+                    st.error(msg)
+
+elif menu == "Forgot Password":
+    email = st.text_input("Enter your registered email")
+    if st.button("Send Temporary Password"):
+        temp_pass = generate_temp_password()
+        success, msg = reset_password(email, temp_pass)
+        if success:
+            email_body = f"Your temporary password is: {temp_pass}"
+            sent = send_email(email, "Password Reset - Maintenance Dashboard", email_body)
+            if sent:
+                st.success("Temporary password sent to your email.")
+            else:
+                st.error("Failed to send email. Try again later.")
+        else:
+            st.error(msg)
