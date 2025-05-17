@@ -1,5 +1,5 @@
 from database import add_user, get_user
-from utils.security import hash_password, check_password
+from Utils.security import hash_password, check_password
 
 def signup_user(email, password):
     if not email.endswith("@hpcl.in"):
