@@ -1,6 +1,7 @@
 import streamlit as st
 from auth import signup_user, login_user, reset_password
 from database import setup_database
+from database import create_connection  # Add this line
 
 setup_database()
 
@@ -43,12 +44,18 @@ elif choice == "Forgot Password":
 
 elif choice == "Admin View":
     st.subheader("All Registered Users (Admin Only)")
-    conn = create_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT email FROM users")
-    users = cursor.fetchall()
-    conn.close()
+    email = st.text_input("Enter your HPCL email to access admin view")
+    if st.button("View Registered Users"):
+        if email in ADMINS:
+            conn = create_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT email, password FROM users")
+            users = cursor.fetchall()
+            conn.close()
 
-    st.write("### Registered HPCL Users")
-    for u in users:
-        st.write(u[0])
+            st.write("### Registered HPCL Users")
+            for u in users:
+                st.write(f"📧 {u[0]} | 🔑 {u[1]}")
+        else:
+            st.error("Access denied. You are not authorized to view this section.")
+
