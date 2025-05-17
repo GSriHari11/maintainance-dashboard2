@@ -1,23 +1,20 @@
 import smtplib
-from email.mime.text import MIMEText
 import os
+from email.message import EmailMessage
+from dotenv import load_dotenv
 
-def send_password_email(recipient, new_password):
-    EMAIL = os.getenv("EMAIL")
-    EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+load_dotenv()
 
-    try:
-        msg = MIMEText(f"Your new password is: {new_password}")
-        msg["Subject"] = "Password Reset"
-        msg["From"] = EMAIL
-        msg["To"] = recipient
+EMAIL_ADDRESS = os.getenv("EMAIL_ID")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(EMAIL, EMAIL_PASSWORD)
-            server.send_message(msg)
+def send_password_email(to_email, password):
+    msg = EmailMessage()
+    msg["Subject"] = "Your Password for Maintenance Dashboard"
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = to_email
+    msg.set_content(f"Your password is: {password}")
 
-        return True
-    except Exception as e:
-        print("Email error:", e)
-        return False
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
