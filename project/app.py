@@ -8,6 +8,10 @@ setup_database()
 st.title("🔐 HPCL Maintenance Dashboard Login")
 
 menu = ["Login", "Sign Up", "Forgot Password", "Admin View"]
+
+# List of admin emails
+ADMINS = ["golla.srihari@hpcl.in"]
+
 choice = st.sidebar.selectbox("Menu", menu)
 
 if choice == "Login":
