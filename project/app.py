@@ -1,51 +1,49 @@
 import streamlit as st
-from auth import signup_user, login_user, send_password_email
+from auth import signup_user, login_user, send_password_email, is_valid_hpcl_email
 from db import create_users_table, get_user
 
 create_users_table()
-
 st.set_page_config(page_title="HPCL Dashboard", page_icon="🛡️", layout="centered")
 
-st.markdown("## 🔐 HPCL Login System")
+st.title("🔐 HPCL Dashboard Login")
 
-menu = st.radio("Choose an option", ["Login", "Sign Up", "Forgot Password"])
+menu = st.radio("Choose Action", ["Login", "Sign Up", "Forgot Password"])
 
-if menu == "Sign Up":
-    st.subheader("🔴 Sign Up")
-    email = st.text_input("Email")
+if menu == "Login":
+    st.subheader("Login to your HPCL account")
+    email = st.text_input("HPCL Email")
     password = st.text_input("Password", type="password")
-
-    if st.button("Create Account"):
-        if "@hpcl.in" in email:
-            if get_user(email):
-                st.warning("User already exists.")
-            else:
-                signup_user(email, password)
-                st.success("Account created!")
-        else:
-            st.error("Only @hpcl.in emails are allowed.")
-
-elif menu == "Login":
-    st.subheader("🟢 Login")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
-
     if st.button("Login"):
-        if login_user(email, password):
-            st.success("Login successful")
-            st.write(f"Welcome, {email.split('@')[0].capitalize()}!")
-            # Actual dashboard content goes here
+        if not is_valid_hpcl_email(email):
+            st.error("Only @hpcl.in email addresses are allowed.")
+        elif login_user(email, password):
+            st.session_state["logged_in"] = True
+            st.session_state["user_email"] = email
+            st.success(f"Welcome, {email}")
         else:
-            st.error("Invalid email or password")
+            st.error("Incorrect email or password.")
+
+elif menu == "Sign Up":
+    st.subheader("Create HPCL Account")
+    email = st.text_input("Enter HPCL Email")
+    password = st.text_input("Create Password", type="password")
+    if st.button("Register"):
+        success, msg = signup_user(email, password)
+        if success:
+            st.success(msg)
+        else:
+            st.error(msg)
 
 elif menu == "Forgot Password":
-    st.subheader("🔵 Forgot Password")
+    st.subheader("Forgot Password")
     email = st.text_input("Enter your registered HPCL email")
-
     if st.button("Send Password"):
         user = get_user(email)
         if user:
-            send_password_email(email, user[1])
-            st.success("Password sent to your email")
+            try:
+                send_password_email(email, user[1])
+                st.success("Password has been sent to your email.")
+            except Exception as e:
+                st.error("Failed to send email. Check your .env settings.")
         else:
-            st.error("Email not found")
+            st.error("Email not found.")

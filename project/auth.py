@@ -1,38 +1,49 @@
 import smtplib
 from email.mime.text import MIMEText
-from db import add_user, get_user
-import bcrypt
 import os
-from dotenv import load_dotenv
+import sqlite3
+import re
 
-load_dotenv()
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
-EMAIL_ADDRESS = os.getenv("EMAIL_USER")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASS")
-
-def hash_password(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-
-def check_password(password, hashed):
-    return bcrypt.checkpw(password.encode(), hashed.encode())
+def is_valid_hpcl_email(email):
+    return email.endswith("@hpcl.in")
 
 def signup_user(email, password):
-    hashed_pwd = hash_password(password)
-    add_user(email, hashed_pwd)
+    if not is_valid_hpcl_email(email):
+        return False, "Only HPCL email IDs allowed"
+
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE email = ?", (email,))
+    if c.fetchone():
+        return False, "Email already exists"
+
+    c.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
+    conn.commit()
+    conn.close()
+    return True, "User registered successfully"
 
 def login_user(email, password):
-    user = get_user(email)
-    if user and check_password(password, user[1]):
-        return True
-    return False
+    conn = sqlite3.connect("users.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
+    user = c.fetchone()
+    conn.close()
+    return user is not None
 
 def send_password_email(to_email, password):
-    msg = MIMEText(f"Your password is: {password}")
-    msg["Subject"] = "Your HPCL Dashboard Password"
+    msg = MIMEText(f"Your HPCL dashboard password is: {password}")
+    msg["Subject"] = "HPCL Dashboard - Password Recovery"
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = to_email
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.send_message(msg)
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+    except Exception as e:
+        raise Exception("Failed to send password email. Check your .env credentials.") from e
+    
