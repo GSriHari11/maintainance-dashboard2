@@ -37,33 +37,55 @@ if choice == "Login":
     if st.button("Login"):
         if login_user(email, password):
             st.success("Logged in successfully.")
-
-            st.markdown("### 📊 Maintenance Dashboard")
             
+            # Page configuration
+            st.set_page_config(page_title="Status Dashboard", layout="wide")
+
+            st.title("✅ Monthly Task Status Dashboard")
+
+            # Month selection
             selected_month = st.selectbox("Select Month", all_months)
-            status_filter = st.multiselect("Select Status", ["Pending", "Completed"], default=["Pending", "Completed"])
 
-            # Load and filter data
-            data = build_status_summary(selected_month)
+            if selected_month:
+                # Process the selected month
+                summary = build_status_summary(selected_month)
 
-            # Filter by status
-            pie_data = []
-            if "Pending" in status_filter:
-                pie_data.append({"Status": "Pending", "Count": data["monthly_pending"]})
-            if "Completed" in status_filter:
-                pie_data.append({"Status": "Completed", "Count": data["monthly_completed"]})
+                st.subheader(f"📅 Status Summary for {selected_month}")
 
-            if pie_data:
-                df_pie = pd.DataFrame(pie_data)
-                fig = px.pie(df_pie, names="Status", values="Count", title="Task Status Distribution")
-                st.plotly_chart(fig)
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("✅ Completed (This Month)", summary["monthly_completed"])
+                    st.metric("📊 Cumulative Completed", summary["cumulative_completed"])
+                with col2:
+                    st.metric("⏳ Pending (This Month)", summary["monthly_pending"])
+                    st.metric("📉 Cumulative Pending", summary["cumulative_pending"])
 
-            # Task Summary
-            total_tasks = data["monthly_pending"] + data["monthly_completed"]
-            st.subheader("Task Summary")
-            st.metric("Total Tasks", total_tasks)
-            st.metric("Pending", data["monthly_pending"])
-            st.metric("Completed", data["monthly_completed"])
+            # st.markdown("### 📊 Maintenance Dashboard")
+            
+            # selected_month = st.selectbox("Select Month", all_months)
+            # status_filter = st.multiselect("Select Status", ["Pending", "Completed"], default=["Pending", "Completed"])
+
+            # # Load and filter data
+            # data = build_status_summary(selected_month)
+
+            # # Filter by status
+            # pie_data = []
+            # if "Pending" in status_filter:
+            #     pie_data.append({"Status": "Pending", "Count": data["monthly_pending"]})
+            # if "Completed" in status_filter:
+            #     pie_data.append({"Status": "Completed", "Count": data["monthly_completed"]})
+
+            # if pie_data:
+            #     df_pie = pd.DataFrame(pie_data)
+            #     fig = px.pie(df_pie, names="Status", values="Count", title="Task Status Distribution")
+            #     st.plotly_chart(fig)
+
+            # # Task Summary
+            # total_tasks = data["monthly_pending"] + data["monthly_completed"]
+            # st.subheader("Task Summary")
+            # st.metric("Total Tasks", total_tasks)
+            # st.metric("Pending", data["monthly_pending"])
+            # st.metric("Completed", data["monthly_completed"])
         else:
             st.error("Invalid credentials")
 
