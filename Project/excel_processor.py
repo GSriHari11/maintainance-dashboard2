@@ -94,12 +94,21 @@ def get_status_counts(ws):
     return completed, pending
 
 # Determine the relevant financial year based on the month
+# def get_financial_year_range(month):
+#     idx = all_months.index(month)
+#     if "-24" in month or month == "Mar-25":
+#         return all_months[:all_months.index("Mar-25")+1]
+#     else:
+#         return all_months[all_months.index("Apr-25"):all_months.index("Mar-26")+1]
+
 def get_financial_year_range(month):
     idx = all_months.index(month)
     if "-24" in month or month == "Mar-25":
-        return all_months[:all_months.index("Mar-25")+1]
+        start_idx = all_months.index("Apr-24")
     else:
-        return all_months[all_months.index("Apr-25"):all_months.index("Mar-26")+1]
+        start_idx = all_months.index("Apr-25")
+    
+    return all_months[start_idx:idx + 1]  # include up to input month
 
 # Main function to get counts for dashboard
 def build_status_summary(input_month):
