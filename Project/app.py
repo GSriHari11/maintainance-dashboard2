@@ -28,7 +28,7 @@ choice = st.sidebar.selectbox("Menu", menu)
 #         if user:
 #             st.success("Logged in successfully.")
 #         else:
-            st.error("Invalid credentials")
+            # st.error("Invalid credentials")
 
 if choice == "Login":
     st.subheader("Login to your account")
