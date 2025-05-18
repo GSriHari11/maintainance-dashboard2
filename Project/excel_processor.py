@@ -59,8 +59,10 @@
 import openpyxl
 import os
 
-# Path to the folder containing Excel files
-FOLDER_PATH = r'C:\Users\32002714\Desktop\Python\Preventive maintainance dashboard\Excel inputs'
+
+
+# Path to the folder containing Excel files (relative to current script)
+FOLDER_PATH = os.path.join(os.path.dirname(__file__), "Excel inputs")
 
 # List of months in order
 all_months = [
