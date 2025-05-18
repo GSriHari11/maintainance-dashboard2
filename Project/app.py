@@ -101,7 +101,7 @@ elif choice == "Admin View":
 
 # --------- DASHBOARD ---------
 elif choice == "Dashboard" and st.session_state.logged_in:
-    st.title("🛠️ Preventive Maintenance Dashboard")
+    st.title("🛠️ Preventive Maintenance Compliance")
     # st.sidebar.success(f"Welcome, {st.session_state.username}!")
 
     # ---------------- FILTERS ----------------
@@ -139,7 +139,7 @@ elif choice == "Dashboard" and st.session_state.logged_in:
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.username = ""
-        st.experimental_rerun()
+        # st.experimental_rerun()
 
 
     # st.title("🛠️ Preventive Maintenance ")
