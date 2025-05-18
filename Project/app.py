@@ -12,13 +12,22 @@ st.title("🔐 HPCL Maintenance Dashboard Login")
 
 menu = ["Login", "Sign Up", "Forgot Password", "Admin View"]
 
+# Initialize session state for login
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "user_email" not in st.session_state:
+    st.session_state.user_email = ""
+
 # List of admin credentials (you can add more here later)
 ADMINS = {
     "golla.srihari@hpcl.in": "1234567890"  # <-- your admin password
 }
 
-choice = st.sidebar.selectbox("Menu", menu)
-
+# Sidebar menu
+if not st.session_state.logged_in:
+    choice = st.sidebar.selectbox("Menu", menu)
+else:
+    choice = "Dashboard"  # Default page after login
 # if choice == "Login":
 #     st.subheader("Login to your account")
 #     email = st.text_input("Email", key="login_email")
@@ -30,7 +39,9 @@ choice = st.sidebar.selectbox("Menu", menu)
 #         else:
             # st.error("Invalid credentials")
 
+# --------- LOGIN ---------
 if choice == "Login":
+    st.title("🔐 HPCL Maintenance Dashboard Login")
     st.subheader("Login to your account")
     email = st.text_input("Email", key="login_email")
     password = st.text_input("Password", type="password", key="login_password")
@@ -38,40 +49,12 @@ if choice == "Login":
     if st.button("Login"):
         user = login_user(email, password)
         if user:
+            st.session_state.logged_in = True
+            st.session_state.user_email = email
             st.success("✅ Logged in successfully.")
-            st.markdown("### 🛠️ Preventive Maintenance Dashboard")
-
-            # Filters
-            col1, col2 = st.columns(2)
-            with col1:
-                selected_month = st.selectbox("📅 Select Month", all_months)
-            with col2:
-                status_filter = st.multiselect("📌 Select Status", ["Pending", "Completed"], default=["Pending", "Completed"])
-
-            # Process summary
-            summary = build_status_summary(selected_month)
-            total_tasks = summary["monthly_pending"] + summary["monthly_completed"]
-
-            # Pie Chart
-            pie_data = []
-            if "Pending" in status_filter:
-                pie_data.append({"Status": "Pending", "Count": summary["monthly_pending"]})
-            if "Completed" in status_filter:
-                pie_data.append({"Status": "Completed", "Count": summary["monthly_completed"]})
-
-            if pie_data:
-                df_pie = pd.DataFrame(pie_data)
-                fig = px.pie(df_pie, names="Status", values="Count", title="Maintenance Status Breakdown")
-                st.plotly_chart(fig, use_container_width=True)
-
-            # Task Summary
-            st.markdown("### 📊 Task Summary")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("🧮 Total Tasks", total_tasks)
-            col2.metric("✅ Completed", summary["monthly_completed"])
-            col3.metric("⏳ Pending", summary["monthly_pending"])
+            st.rerun()  # Force rerun to go to dashboard
         else:
-            st.error("❌ Invalid credentials. Please try again.")
+            st.error("❌ Invalid credentials.")
 
 
 elif choice == "Sign Up":
@@ -117,7 +100,33 @@ elif choice == "Admin View":
         else:
             st.error("❌ Invalid admin credentials. Access denied.")
 
+# --------- DASHBOARD ---------
+elif choice == "Dashboard" and st.session_state.logged_in:
+    st.title("🛠️ Preventive Maintenance Dashboard")
 
+    # Filters
+    selected_month = st.selectbox("📅 Select Month", all_months, key="month_filter")
+    selected_status = st.multiselect("✅ Select Status", ["Completed", "Pending"], default=["Completed", "Pending"], key="status_filter")
+
+    # Load and filter data
+    df, mon_comp, mon_pend, cum_comp, cum_pend = build_status_summary(selected_month)
+
+    filtered_df = df[df["Status"].isin(selected_status)]
+
+    st.markdown("### Maintenance Task Overview")
+    st.dataframe(filtered_df)
+
+    # Summary Stats
+    st.write(f"**{selected_month} Summary:** ✅ Completed: `{mon_comp}`, ❌ Pending: `{mon_pend}`")
+    st.write(f"**Cumulative till {selected_month}:** ✅ Completed: `{cum_comp}`, ❌ Pending: `{cum_pend}`")
+
+    # Logout button
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.session_state.user_email = ""
+        st.rerun()
+
+        
 # import streamlit as st
 # from auth import signup_user, login_user, reset_password
 # from database import setup_database, create_connection
