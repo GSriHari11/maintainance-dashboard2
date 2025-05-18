@@ -8,7 +8,6 @@ import plotly.express as px
 
 setup_database()
 
-st.title("🔐 HPCL Maintenance Dashboard Login")
 
 menu = ["Login", "Sign Up", "Forgot Password", "Admin View"]
 
@@ -25,6 +24,7 @@ ADMINS = {
 
 # Sidebar menu
 if not st.session_state.logged_in:
+    st.title("🔐 HPCL Maintenance Dashboard Login")
     choice = st.sidebar.selectbox("Menu", menu)
 else:
     choice = "Dashboard"  # Default page after login
