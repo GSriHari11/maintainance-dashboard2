@@ -102,7 +102,7 @@ def get_financial_year_range(month):
         return all_months[all_months.index("Apr-25"):all_months.index("Mar-26")+1]
 
 # Main function to get counts for dashboard
-# def build_status_summary(input_month):
+def build_status_summary(input_month):
     workbooks = load_workbooks()
     fy_months = get_financial_year_range(input_month)
 
@@ -130,7 +130,7 @@ def get_financial_year_range(month):
     }
 
 
-def build_status_summary(input_month):
+# def build_status_summary(input_month):
     workbooks = load_workbooks()
     fy_months = get_financial_year_range(input_month)
 

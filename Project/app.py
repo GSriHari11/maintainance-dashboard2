@@ -101,29 +101,75 @@ elif choice == "Admin View":
 
 # --------- DASHBOARD ---------
 elif choice == "Dashboard" and st.session_state.logged_in:
-    st.title("🛠️ Preventive Maintenance ")
+    st.title("🛠️ Preventive Maintenance Dashboard")
+    st.sidebar.success(f"Welcome, {st.session_state.username}!")
 
-    # Filters
-    selected_month = st.selectbox("📅 Select Month", all_months, key="month_filter")
-    selected_status = st.multiselect("✅ Select Status", ["Completed", "Pending"], default=["Completed", "Pending"], key="status_filter")
+    # ---------------- FILTERS ----------------
+    all_months = [
+        "Apr-24", "May-24", "Jun-24", "Jul-24", "Aug-24", "Sep-24", "Oct-24", "Nov-24", "Dec-24",
+        "Jan-25", "Feb-25", "Mar-25", "Apr-25", "May-25", "Jun-25", "Jul-25", "Aug-25", "Sep-25",
+        "Oct-25", "Nov-25", "Dec-25", "Jan-26", "Feb-26", "Mar-26"
+    ]
 
-    # Load and filter data
-    df, mon_comp, mon_pend, cum_comp, cum_pend = build_status_summary(selected_month)
+    st.sidebar.header("📅 Filter Options")
+    selected_month = st.sidebar.selectbox("Select Month", all_months, index=0)
+    selected_status = st.sidebar.multiselect("Select Status", ["Completed", "Pending"], default=["Completed", "Pending"])
 
-    filtered_df = df[df["Status"].isin(selected_status)]
+    # ---------------- DATA PROCESSING ----------------
+    summary = build_status_summary(selected_month)
+    mon_comp = summary["monthly_completed"]
+    mon_pend = summary["monthly_pending"]
+    cum_comp = summary["cumulative_completed"]
+    cum_pend = summary["cumulative_pending"]
 
-    st.markdown("### Maintenance Task Overview")
-    st.dataframe(filtered_df)
+    # ---------------- DASHBOARD DISPLAY ----------------
+    st.subheader(f"Maintenance Summary for {selected_month}")
+    col1, col2 = st.columns(2)
 
-    # Summary Stats
-    st.write(f"**{selected_month} Summary:** ✅ Completed: `{mon_comp}`, ❌ Pending: `{mon_pend}`")
-    st.write(f"**Cumulative till {selected_month}:** ✅ Completed: `{cum_comp}`, ❌ Pending: `{cum_pend}`")
+    with col1:
+        st.metric("✅ Completed (Monthly)", mon_comp)
+        st.metric("📊 Completed (Cumulative)", cum_comp)
 
-    # Logout button
+    with col2:
+        st.metric("⏳ Pending (Monthly)", mon_pend)
+        st.metric("📊 Pending (Cumulative)", cum_pend)
+
+    # Optional: You can expand to show more data or visuals if needed
+
     if st.button("Logout"):
         st.session_state.logged_in = False
-        st.session_state.user_email = ""
-        st.rerun()
+        st.session_state.username = ""
+        st.experimental_rerun()
+
+        
+    # st.title("🛠️ Preventive Maintenance ")
+
+    # # Filters
+    # selected_month = st.selectbox("📅 Select Month", all_months, key="month_filter")
+    # selected_status = st.multiselect("✅ Select Status", ["Completed", "Pending"], default=["Completed", "Pending"], key="status_filter")
+
+    # # Load and filter data
+    # # df, mon_comp, mon_pend, cum_comp, cum_pend = build_status_summary(selected_month)
+    # summary = build_status_summary(selected_month)
+    # mon_comp = summary["monthly_completed"]
+    # mon_pend = summary["monthly_pending"]
+    # cum_comp = summary["cumulative_completed"]
+    # cum_pend = summary["cumulative_pending"]
+
+    # # filtered_df = df[df["Status"].isin(selected_status)]
+
+    # st.markdown("### Maintenance Task Overview")
+    # st.dataframe(filtered_df)
+
+    # # Summary Stats
+    # st.write(f"**{selected_month} Summary:** ✅ Completed: `{mon_comp}`, ❌ Pending: `{mon_pend}`")
+    # st.write(f"**Cumulative till {selected_month}:** ✅ Completed: `{cum_comp}`, ❌ Pending: `{cum_pend}`")
+
+    # # Logout button
+    # if st.button("Logout"):
+    #     st.session_state.logged_in = False
+    #     st.session_state.user_email = ""
+    #     st.rerun()
 
 
 # import streamlit as st
