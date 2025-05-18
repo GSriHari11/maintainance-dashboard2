@@ -102,7 +102,7 @@ def get_financial_year_range(month):
         return all_months[all_months.index("Apr-25"):all_months.index("Mar-26")+1]
 
 # Main function to get counts for dashboard
-def build_status_summary(input_month):
+# def build_status_summary(input_month):
     workbooks = load_workbooks()
     fy_months = get_financial_year_range(input_month)
 
@@ -129,3 +129,34 @@ def build_status_summary(input_month):
         "cumulative_pending": cumulative_pending,
     }
 
+
+def build_status_summary(input_month):
+    workbooks = load_workbooks()
+    fy_months = get_financial_year_range(input_month)
+
+    cumulative_completed = 0
+    cumulative_pending = 0
+    monthly_completed = 0
+    monthly_pending = 0
+    data_frames = []
+
+    for file_name, wb in workbooks.items():
+        if input_month in wb.sheetnames:
+            ws = wb[input_month]
+            df = pd.DataFrame(ws.values)
+            df.columns = df.iloc[0]
+            df = df[1:]
+            df["Source File"] = file_name
+            data_frames.append(df)
+
+        for month in fy_months:
+            if month in wb.sheetnames:
+                comp, pend = get_status_counts(wb[month])
+                cumulative_completed += comp
+                cumulative_pending += pend
+                if month == input_month:
+                    monthly_completed = comp
+                    monthly_pending = pend
+
+    combined_df = pd.concat(data_frames, ignore_index=True) if data_frames else pd.DataFrame()
+    return combined_df, monthly_completed, monthly_pending, cumulative_completed, cumulative_pending

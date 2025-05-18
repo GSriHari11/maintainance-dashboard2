@@ -41,7 +41,6 @@ else:
 
 # --------- LOGIN ---------
 if choice == "Login":
-    st.title("🔐 HPCL Maintenance Dashboard Login")
     st.subheader("Login to your account")
     email = st.text_input("Email", key="login_email")
     password = st.text_input("Password", type="password", key="login_password")
@@ -102,7 +101,7 @@ elif choice == "Admin View":
 
 # --------- DASHBOARD ---------
 elif choice == "Dashboard" and st.session_state.logged_in:
-    st.title("🛠️ Preventive Maintenance Dashboard")
+    st.title("🛠️ Preventive Maintenance ")
 
     # Filters
     selected_month = st.selectbox("📅 Select Month", all_months, key="month_filter")
@@ -126,7 +125,7 @@ elif choice == "Dashboard" and st.session_state.logged_in:
         st.session_state.user_email = ""
         st.rerun()
 
-        
+
 # import streamlit as st
 # from auth import signup_user, login_user, reset_password
 # from database import setup_database, create_connection
