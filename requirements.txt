@@ -1,4 +1,4 @@
-streamlit
-bcrypt
-python-dotenv
-openpyxl
+    streamlit
+    bcrypt
+    python-dotenv
+    openpyxl

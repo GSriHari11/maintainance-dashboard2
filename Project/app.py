@@ -28,16 +28,7 @@ if not st.session_state.logged_in:
     choice = st.sidebar.selectbox("Menu", menu)
 else:
     choice = "Dashboard"  # Default page after login
-# if choice == "Login":
-#     st.subheader("Login to your account")
-#     email = st.text_input("Email", key="login_email")
-#     password = st.text_input("Password", type="password", key="login_password")
-#     if st.button("Login"):
-#         user = login_user(email, password)
-#         if user:
-#             st.success("Logged in successfully.")
-#         else:
-            # st.error("Invalid credentials")
+
 
 # --------- LOGIN ---------
 if choice == "Login":
@@ -78,7 +69,6 @@ elif choice == "Forgot Password":
             st.error(msg)
 
 elif choice == "Admin View":
-    st.subheader("🔐 HPCL Maintenance Dashboard Login")
     st.markdown("### All Registered Users (Admin Only)")
 
     admin_email = st.text_input("Enter Admin HPCL Email")
