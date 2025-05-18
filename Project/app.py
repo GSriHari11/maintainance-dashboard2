@@ -2,6 +2,7 @@ import streamlit as st
 from auth import signup_user, login_user, reset_password
 from database import setup_database
 from database import create_connection  # Add this line
+from excel_processor import build_status_summary, all_months
 
 setup_database()
 
@@ -16,6 +17,17 @@ ADMINS = {
 
 choice = st.sidebar.selectbox("Menu", menu)
 
+# if choice == "Login":
+#     st.subheader("Login to your account")
+#     email = st.text_input("Email", key="login_email")
+#     password = st.text_input("Password", type="password", key="login_password")
+#     if st.button("Login"):
+#         user = login_user(email, password)
+#         if user:
+#             st.success("Logged in successfully.")
+#         else:
+#             st.error("Invalid credentials")
+
 if choice == "Login":
     st.subheader("Login to your account")
     email = st.text_input("Email", key="login_email")
@@ -24,6 +36,15 @@ if choice == "Login":
         user = login_user(email, password)
         if user:
             st.success("Logged in successfully.")
+            st.subheader("📊 Maintenance Data Viewer")
+            selected_month = st.selectbox("Select Month", all_months)
+            if st.button("Show Data"):
+                df, mon_comp, mon_pend, cum_comp, cum_pend = build_status_summary(selected_month)
+                st.write(f"### ✅ {selected_month} Summary")
+                st.write(f"Completed: `{mon_comp}`, Pending: `{mon_pend}`")
+                st.write(f"Cumulative till {selected_month} - Completed: `{cum_comp}`, Pending: `{cum_pend}`")
+                st.write("### 📄 Excel Data:")
+                st.dataframe(df)
         else:
             st.error("Invalid credentials")
 
