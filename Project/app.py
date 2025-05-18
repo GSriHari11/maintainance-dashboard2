@@ -102,7 +102,7 @@ elif choice == "Admin View":
 # --------- DASHBOARD ---------
 elif choice == "Dashboard" and st.session_state.logged_in:
     st.title("🛠️ Preventive Maintenance Dashboard")
-    st.sidebar.success(f"Welcome, {st.session_state.username}!")
+    # st.sidebar.success(f"Welcome, {st.session_state.username}!")
 
     # ---------------- FILTERS ----------------
     all_months = [
@@ -141,7 +141,7 @@ elif choice == "Dashboard" and st.session_state.logged_in:
         st.session_state.username = ""
         st.experimental_rerun()
 
-        
+
     # st.title("🛠️ Preventive Maintenance ")
 
     # # Filters
