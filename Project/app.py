@@ -3,6 +3,8 @@ from auth import signup_user, login_user, reset_password
 from database import setup_database
 from database import create_connection  # Add this line
 from excel_processor import build_status_summary, all_months
+import pandas as pd
+import plotly.express as px
 
 setup_database()
 
@@ -31,24 +33,40 @@ choice = st.sidebar.selectbox("Menu", menu)
 if choice == "Login":
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
+    
     if st.button("Login"):
         if login_user(email, password):
             st.success("Logged in successfully.")
 
-            st.subheader("📊 Maintenance Data Viewer")
+            st.markdown("### 📊 Maintenance Dashboard")
+            
             selected_month = st.selectbox("Select Month", all_months)
-            status_filter = st.selectbox("Select Status", ["Completed", "Pending"])
+            status_filter = st.multiselect("Select Status", ["Pending", "Completed"], default=["Pending", "Completed"])
 
-            if st.button("Show Data"):
-                data = build_status_summary(selected_month)
-                if status_filter == "Completed":
-                    st.metric(f"{selected_month} - Completed", data["monthly_completed"])
-                    st.metric("Cumulative Completed", data["cumulative_completed"])
-                else:
-                    st.metric(f"{selected_month} - Pending", data["monthly_pending"])
-                    st.metric("Cumulative Pending", data["cumulative_pending"])
+            # Load and filter data
+            data = build_status_summary(selected_month)
+
+            # Filter by status
+            pie_data = []
+            if "Pending" in status_filter:
+                pie_data.append({"Status": "Pending", "Count": data["monthly_pending"]})
+            if "Completed" in status_filter:
+                pie_data.append({"Status": "Completed", "Count": data["monthly_completed"]})
+
+            if pie_data:
+                df_pie = pd.DataFrame(pie_data)
+                fig = px.pie(df_pie, names="Status", values="Count", title="Task Status Distribution")
+                st.plotly_chart(fig)
+
+            # Task Summary
+            total_tasks = data["monthly_pending"] + data["monthly_completed"]
+            st.subheader("Task Summary")
+            st.metric("Total Tasks", total_tasks)
+            st.metric("Pending", data["monthly_pending"])
+            st.metric("Completed", data["monthly_completed"])
         else:
             st.error("Invalid credentials")
+
 
 elif choice == "Sign Up":
     st.subheader("Create New Account")
