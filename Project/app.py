@@ -29,22 +29,24 @@ choice = st.sidebar.selectbox("Menu", menu)
 #             st.error("Invalid credentials")
 
 if choice == "Login":
-    st.subheader("Login to your account")
-    email = st.text_input("Email", key="login_email")
-    password = st.text_input("Password", type="password", key="login_password")
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
     if st.button("Login"):
-        user = login_user(email, password)
-        if user:
+        if login_user(email, password):
             st.success("Logged in successfully.")
+
             st.subheader("📊 Maintenance Data Viewer")
             selected_month = st.selectbox("Select Month", all_months)
+            status_filter = st.selectbox("Select Status", ["Completed", "Pending"])
+
             if st.button("Show Data"):
-                df, mon_comp, mon_pend, cum_comp, cum_pend = build_status_summary(selected_month)
-                st.write(f"### ✅ {selected_month} Summary")
-                st.write(f"Completed: `{mon_comp}`, Pending: `{mon_pend}`")
-                st.write(f"Cumulative till {selected_month} - Completed: `{cum_comp}`, Pending: `{cum_pend}`")
-                st.write("### 📄 Excel Data:")
-                st.dataframe(df)
+                data = build_status_summary(selected_month)
+                if status_filter == "Completed":
+                    st.metric(f"{selected_month} - Completed", data["monthly_completed"])
+                    st.metric("Cumulative Completed", data["cumulative_completed"])
+                else:
+                    st.metric(f"{selected_month} - Pending", data["monthly_pending"])
+                    st.metric("Cumulative Pending", data["cumulative_pending"])
         else:
             st.error("Invalid credentials")
 
