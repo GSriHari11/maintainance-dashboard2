@@ -345,8 +345,9 @@ if not st.session_state.logged_in:
     choice = st.sidebar.selectbox("Menu", menu)
 else:
     choice = "Welcome page"
-# else:
-#     choice = "Dashboard"  # Default page after login
+
+if  choice == "Welcome page":
+    choice = "Dashboard"  # Default page after login
 
 
 
