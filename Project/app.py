@@ -292,7 +292,8 @@ def vibration_page_function():
 if choice == "Login":
     Login_Function()
 
-if st.session_state.logged_in and not st.session_state.welcome_complete and not st.session_state.show_vibration:
+# if st.session_state.logged_in and not st.session_state.welcome_complete and not st.session_state.show_vibration:
+if st.session_state.logged_in and  st.session_state.welcome_complete and not st.session_state.show_vibration:
     welcome_page_function()
 
 elif st.session_state.logged_in and st.session_state.show_vibration:
