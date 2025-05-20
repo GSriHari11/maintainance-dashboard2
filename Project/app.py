@@ -172,15 +172,16 @@ choice = st.sidebar.selectbox("Menu", menu)
 
 def Login_Function():
     st.subheader("Login to your account")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
+    email = st.text_input("Email", key="login_email")
+    password = st.text_input("Password", type="password", key="login_password")
+
     if st.button("Login"):
         user = login_user(email, password)
         if user:
             st.session_state.logged_in = True
             st.session_state.user_email = email
             st.success("✅ Logged in successfully.")
-            st.rerun()
+            st.rerun()  # Force rerun to go to dashboard
         else:
             st.error("❌ Invalid credentials.")
 
@@ -207,8 +208,10 @@ def forget_password_function():
 
 def admin_view_function():
     st.markdown("### All Registered Users (Admin Only)")
+
     admin_email = st.text_input("Enter Admin HPCL Email")
     admin_password = st.text_input("Enter Admin Password", type="password")
+
     if st.button("View Registered Users"):
         if admin_email in ADMINS and ADMINS[admin_email] == admin_password:
             conn = create_connection()
@@ -216,6 +219,7 @@ def admin_view_function():
             cursor.execute("SELECT email, password FROM users")
             users = cursor.fetchall()
             conn.close()
+
             st.success("✅ Admin access granted.")
             st.write("### 👥 Registered Users")
             for u in users:
@@ -293,8 +297,8 @@ if choice == "Login":
     Login_Function()
 
 # if st.session_state.logged_in and not st.session_state.welcome_complete and not st.session_state.show_vibration:
-if st.session_state.logged_in and  st.session_state.welcome_complete and not st.session_state.show_vibration:
-    welcome_page_function()
+# if st.session_state.logged_in and  st.session_state.welcome_complete and not st.session_state.show_vibration:
+#     welcome_page_function()
 
 elif st.session_state.logged_in and st.session_state.show_vibration:
     vibration_page_function()
