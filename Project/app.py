@@ -539,21 +539,21 @@ def admin_view_function():
             st.error("❌ Invalid admin credentials. Access denied.")
 
 def welcome_function():
-    st.title("👋 Welcome Page")
-    st.markdown(f"## Welcome, 👤 **{st.session_state.user_email}**")
-    st.markdown("### 🛠️ Rotary Equipments Compliance Status")
+    st.title("⚙️Rotary Equipments Compliance Status")
+    st.markdown(f"## 👋 Welcome, 👤 **{st.session_state.user_email}**")
+    # st.markdown("### 🛠️ Rotary Equipments Compliance Status")
 
-    with st.expander("📌 Preventive Maintenance Status"):
+    with st.expander("🧰 Preventive Maintenance Status"):
         st.write("➡️ Go to sidebar and view maintenance summary for each month.")
 
     with st.expander("🔍 Predictive Maintenance Status"):
-        option = st.radio("Select Option:", ["None", "Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
+        option = st.radio("Select Option:", ["Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
         if option == "Vibration Monitoring":
             st.session_state.current_page = "Dashboard"
             st.rerun()
 
 def vibration_monitoring_function():
-    st.header("🔎 Vibration Monitoring Status")
+    st.header("📈 Vibration Monitoring Status")
 
     st.sidebar.header("📅 Filter Options")
     selected_month = st.sidebar.selectbox("Select Month", all_months, index=0)
