@@ -328,11 +328,14 @@ setup_database()
 
 menu = ["Login", "Sign Up", "Forgot Password", "Admin View"]
 
-# Initialize session state for login
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "user_email" not in st.session_state:
     st.session_state.user_email = ""
+if "welcome_complete" not in st.session_state:
+    st.session_state.welcome_complete = False
+if "show_vibration" not in st.session_state:
+    st.session_state.show_vibration = False
 
 # List of admin credentials (you can add more here later)
 ADMINS = {
