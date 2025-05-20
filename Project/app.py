@@ -472,7 +472,13 @@ elif choice == "Welcome page" and st.session_state.logged_in:
         options = ["Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"]
         selected = st.radio("Choose a method to explore:", options)
 
-        if selected == "Vibration Monitoring":
-            st.session_state.show_vibration = True
-            # choice = "Dashboard"  # Default page after login
+        if st.button("Vibration Monitoring"):
+            st.success("✅ Logged in successfully.")
+            # Default page after login
             st.rerun()
+        st.button("Ultrasound Monitoring")        
+        st.button("Lube Oil Analysis")
+        st.button("Loupling Inspection")
+
+
+            
