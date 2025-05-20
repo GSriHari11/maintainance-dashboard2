@@ -395,7 +395,7 @@ def welcome_function():
         st.rerun()
 
 def vibration_monitoring_function():
-    st.header("🔎 Vibration Monitoring Status")
+    st.markdown("🔎 Vibration Monitoring Status")
     # st.image("vibration_status_image.png", caption="Vibration Monitoring Dashboard", use_column_width=True)
 
     # st.markdown("---")
