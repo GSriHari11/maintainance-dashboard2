@@ -163,13 +163,14 @@ if "show_vibration" not in st.session_state:
 menu = ["Login", "Sign Up", "Forgot Password", "Admin View"]
 
 # ---------------------- LOGIN PAGE -----------------------
-if not st.session_state.logged_in:
-    st.title("🔐 HPCL Maintenance Dashboard Login")
-    choice = st.sidebar.selectbox("Menu", menu)
-else:
-    choice = "Dashboard"
+# if not st.session_state.logged_in:
+st.title("🔐 HPCL Maintenance Dashboard Login")
+choice = st.sidebar.selectbox("Menu", menu)
+# else:
+#     choice = "Dashboard"
 
-if choice == "Login":
+
+def Login_Function():
     st.subheader("Login to your account")
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
@@ -183,7 +184,7 @@ if choice == "Login":
         else:
             st.error("❌ Invalid credentials.")
 
-elif choice == "Sign Up":
+def sign_up_function():
     st.subheader("Create New Account")
     email = st.text_input("Email", key="signup_email")
     password = st.text_input("Password", type="password", key="signup_password")
@@ -194,7 +195,7 @@ elif choice == "Sign Up":
         else:
             st.error(msg)
 
-elif choice == "Forgot Password":
+def forget_password_function():
     st.subheader("Reset Password")
     email = st.text_input("Registered Email")
     if st.button("Send Password"):
@@ -204,7 +205,7 @@ elif choice == "Forgot Password":
         else:
             st.error(msg)
 
-elif choice == "Admin View":
+def admin_view_function():
     st.markdown("### All Registered Users (Admin Only)")
     admin_email = st.text_input("Enter Admin HPCL Email")
     admin_password = st.text_input("Enter Admin Password", type="password")
@@ -222,8 +223,7 @@ elif choice == "Admin View":
         else:
             st.error("❌ Invalid admin credentials. Access denied.")
 
-# -------------------- WELCOME PAGE -----------------------
-elif st.session_state.logged_in and not st.session_state.welcome_complete and not st.session_state.show_vibration:
+def welcome_page_function():
     st.title("👋 Welcome Page")
 
     email = st.session_state.user_email
@@ -245,22 +245,15 @@ elif st.session_state.logged_in and not st.session_state.welcome_complete and no
 
     st.button("Go to Preventive Maintenance Dashboard", on_click=lambda: st.session_state.update({"welcome_complete": True}))
 
-# -------------------- VIBRATION PAGE -----------------------
-elif st.session_state.logged_in and st.session_state.show_vibration:
+def vibration_page_function():
     st.title("🔎 Vibration Monitoring Status")
 
-    image_path = "vibration_status_image.png"
-    if os.path.exists(image_path):
-        st.image(image_path, caption="Vibration Monitoring Dashboard", use_container_width=True)
-    else:
-        st.error(f"⚠️ Image '{image_path}' not found. Please upload it to the root directory.")
+    # image_path = "vibration_status_image.png"
+    # if os.path.exists(image_path):
+    #     st.image(image_path, caption="Vibration Monitoring Dashboard", use_container_width=True)
+    # else:
+    #     st.error(f"⚠️ Image '{image_path}' not found. Please upload it to the root directory.")
 
-    if st.button("⬅ Back to Welcome Page"):
-        st.session_state.show_vibration = False
-        st.rerun()
-
-# -------------------- DASHBOARD -----------------------
-elif st.session_state.logged_in and st.session_state.welcome_complete:
     st.title("🛠️ Preventive Maintenance Compliance")
 
     all_months = [
@@ -292,4 +285,22 @@ elif st.session_state.logged_in and st.session_state.welcome_complete:
         for key in ["logged_in", "user_email", "welcome_complete", "show_vibration"]:
             st.session_state[key] = False
         st.rerun()
+
+    if st.button("⬅ Back to Welcome Page"):
+        st.session_state.show_vibration = False
+        
+if choice == "Login":
+    Login_Function()
+    welcome_page_function()
+    vibration_page_function()
+
+elif choice == "Sign Up":
+    sign_up_function()
+
+elif choice == "Forgot Password":
+    forget_password_function()
+
+
+elif choice == "Admin View":
+    admin_view_function()
 
