@@ -2,7 +2,6 @@ import openpyxl
 import os
 import pandas as pd 
 
-
 # Path to the folder containing Excel files (relative to current script)
 FOLDER_PATH = os.path.join(os.path.dirname(__file__), "Excel inputs")
 
