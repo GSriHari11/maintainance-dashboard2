@@ -346,8 +346,7 @@ if not st.session_state.logged_in:
 else:
     choice = "Welcome page"
 
-if  choice == "Welcome page":
-    choice = "Dashboard"  # Default page after login
+
 
 
 
@@ -450,7 +449,7 @@ elif choice == "Dashboard" and st.session_state.logged_in:
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.username = ""
-        # st.experimental_rerun()
+        st.experimental_rerun()
 
 elif choice == "Welcome page" and st.session_state.logged_in:
     st.title("👋 Welcome Page")
@@ -470,4 +469,5 @@ elif choice == "Welcome page" and st.session_state.logged_in:
 
         if selected == "Vibration Monitoring":
             st.session_state.show_vibration = True
+            choice = "Dashboard"  # Default page after login
             st.rerun()
