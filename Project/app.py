@@ -293,7 +293,7 @@ def vibration_page_function():
     if st.button("⬅ Back to Welcome Page"):
         st.session_state.show_vibration = False
         
-if choice == "Login":
+if choice == "Login" and not st.session_state.show_vibration:
     Login_Function()
 
 # if st.session_state.logged_in and not st.session_state.welcome_complete and not st.session_state.show_vibration:
