@@ -344,8 +344,10 @@ if not st.session_state.logged_in:
     st.title("🔐 HPCL Maintenance Dashboard Login")
     choice = st.sidebar.selectbox("Menu", menu)
 else:
-    choice = "Welcome page"
+    choice = "Welcome page" 
 
+if choice == "Welcome page":
+    choice = "Dashboard"
 
 
 
@@ -469,5 +471,5 @@ elif choice == "Welcome page" and st.session_state.logged_in:
 
         if selected == "Vibration Monitoring":
             st.session_state.show_vibration = True
-            choice = "Dashboard"  # Default page after login
+            # choice = "Dashboard"  # Default page after login
             st.rerun()
