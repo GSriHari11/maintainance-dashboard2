@@ -459,7 +459,7 @@
 #------------------------------------------------------------------------------------------------------------------
 import streamlit as st
 from auth import signup_user, login_user, reset_password
-from database import setup_database, create_connection
+from database import setup_database, create_connection  
 from excel_processor import build_status_summary, all_months
 import pandas as pd
 
@@ -547,9 +547,10 @@ def welcome_function():
         st.write("➡️ Go to sidebar and view maintenance summary for each month.")
 
     with st.expander("🔍 Predictive Maintenance Status"):
-        option = st.radio("Select Option:", ["Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
+        option = st.radio("Select Option:", ["None","Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
         if option == "Vibration Monitoring":
             st.session_state.current_page = "Dashboard"
+            st.session_state.maintenance_option = "None"  # Reset to prevent re-triggering
             st.rerun()
 
 def vibration_monitoring_function():
