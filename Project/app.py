@@ -578,13 +578,18 @@ elif choice == "Admin View":
 elif choice == "Welcome":
     st.title("👋 Welcome Page")
     st.markdown(f"## Welcome, 👤 **{st.session_state.user_email}**")
-    st.markdown("### 🛠️ Rotary Maintenance Status")
+    st.markdown("### 🛠️ Rotary Equipments Compliance Status")
 
-    # Tree Diagram (Simple Text Version)
-    st.markdown("```text\nMaintenance Overview\n│\n├── Preventive Maintenance\n│   └── Go to Dashboard\n│\n└── Predictive Maintenance\n    ├── Vibration Monitoring\n    ├── Ultrasound Monitoring\n    ├── Lube Oil Analysis\n    └── Coupling Inspection\n```")
+    
+    with st.expander("📌 Preventive Maintenance Status"):
+        st.write("➡️ Go to sidebar and view maintenance summary for each month.")
 
-    st.subheader("🔍 Choose a Predictive Maintenance Option")
-    option = st.radio("Select Option:", ["None", "Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
+    with st.expander("🔍 Predictive Maintenance Status"):
+        options = ["Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"]
+        # selected = st.radio("Choose a method to explore:", options)
+
+        st.subheader("🔍 Choose a Predictive Maintenance Option")
+        option = st.radio("Select Option:", ["None", "Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
 
     if option == "Vibration Monitoring":
         st.session_state.current_page = "Dashboard"
@@ -593,10 +598,10 @@ elif choice == "Welcome":
 # ------------------ DASHBOARD ------------------
 elif choice == "Dashboard":
     st.title("🔎 Vibration Monitoring Status")
-    st.image("vibration_status_image.png", caption="Vibration Monitoring Dashboard", use_column_width=True)
+    # st.image("vibration_status_image.png", caption="Vibration Monitoring Dashboard", use_column_width=True)
 
-    st.markdown("---")
-    st.header("🛠️ Preventive Maintenance Compliance Summary")
+    # st.markdown("---")
+    # st.header("🛠️ Preventive Maintenance Compliance Summary")
 
     st.sidebar.header("📅 Filter Options")
     selected_month = st.sidebar.selectbox("Select Month", all_months, index=0)
