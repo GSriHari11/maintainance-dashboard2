@@ -588,7 +588,7 @@ elif choice == "Welcome":
         options = ["Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"]
         # selected = st.radio("Choose a method to explore:", options)
 
-        st.subheader("🔍 Choose a Predictive Maintenance Option")
+        # st.subheader("🔍 Choose a Predictive Maintenance Option")
         option = st.radio("Select Option:", ["None", "Vibration Monitoring", "Ultrasound Monitoring", "Lube Oil Analysis", "Coupling Inspection"])
 
     if option == "Vibration Monitoring":
@@ -597,7 +597,7 @@ elif choice == "Welcome":
 
 # ------------------ DASHBOARD ------------------
 elif choice == "Dashboard":
-    st.title("🔎 Vibration Monitoring Status")
+    st.markdown("🔎 Vibration Monitoring Status")
     # st.image("vibration_status_image.png", caption="Vibration Monitoring Dashboard", use_column_width=True)
 
     # st.markdown("---")
